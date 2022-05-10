@@ -9,3 +9,4 @@ enable_testing()
 
 add_subdirectory(1_task)
 add_subdirectory(2_task)
+add_subdirectory(3_task)

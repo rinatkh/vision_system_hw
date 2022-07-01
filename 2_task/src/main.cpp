@@ -21,6 +21,7 @@ Eigen::MatrixXd mEstimator(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B) {
             Weight(j, j) = 1 / (std::max(delta, fabs(res(j))));
         }
     }
+    // TODO график после 1
 
     return result;
 }

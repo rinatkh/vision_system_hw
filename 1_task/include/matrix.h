@@ -40,6 +40,8 @@ public:
 
     Matrix operator-(const Matrix &mat) const;
 
+    void modif();
+
     [[nodiscard]] std::pair<Matrix, Matrix> LU() const;
 
     void Inverse();

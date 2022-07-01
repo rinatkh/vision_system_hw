@@ -8,7 +8,7 @@ static const double EPS = 1e-7;
 Matrix::Matrix(size_t rows, size_t cols) {
     if (rows == 0 || cols == 0) throw std::runtime_error(BAD_INPUT_PARAMETERS);
     data.resize(rows);
-    for (auto& raw : data) {
+    for (auto &raw: data) {
         raw.resize(cols);
     }
 }
@@ -27,6 +27,7 @@ double &Matrix::operator()(size_t i, size_t j) {
     if (i >= get_rows() || j >= get_cols()) throw std::runtime_error(BAD_SIZE_PARAMETERS);
     return data[i][j];
 }
+
 bool Matrix::operator==(const Matrix &mat) const {
     auto rows_ = get_rows();
     auto cols_ = get_cols();
@@ -142,11 +143,13 @@ std::pair<Matrix, Matrix> Matrix::LU() const {
 }
 
 void Matrix::Inverse() {
-    auto rows = get_rows(); auto cols = get_cols();
+    auto rows = get_rows();
+    auto cols = get_cols();
     Matrix invMat(rows, cols);
     for (size_t i = 0; i < rows; ++i) {
         invMat(i, i) = 1;
     }
+    modif();
     auto LU = (*this).LU();
     for (size_t j = 0; j < rows; j++) {
         for (size_t i = 0; i < cols; i++) {
@@ -164,6 +167,35 @@ void Matrix::Inverse() {
         }
     }
     *this = invMat;
+}
+
+void Matrix::modif() {
+    auto rows = get_rows();
+    auto cols = get_cols();
+
+    if (rows != cols) throw std::runtime_error(BAD_INPUT_PARAMETERS);
+
+    for (int j = 0; j < rows - 1; j++) {
+        double imax = this->data[j][j];
+        int nmax = j;
+        for (int i = 0; i < rows; i++) {
+            if (this->data[i][j] > imax) nmax = i;
+        }
+
+        double temp[rows];
+
+        for (int k = 0; k < rows; k++) {
+            temp[k] = this->data[nmax][k];
+        }
+
+        for (int k = 0; k < rows; k++) {
+            this->data[nmax][k] = this->data[j][k];
+        }
+
+        for (int k = 0; k < rows; k++) {
+            this->data[j][k] = temp[k];
+        }
+    }
 }
 
 double Matrix::det() const {
@@ -197,7 +229,8 @@ std::ostream &operator<<(std::ostream &os, const Matrix &matrix) {
     return os;
 }
 
-static Matrix forward(const Matrix& L, const Matrix& b) {
+
+static Matrix forward(const Matrix &L, const Matrix &b) {
     Matrix y(L.get_rows(), 1);
     for (size_t i = 0; i < L.get_rows(); ++i) {
         y(i, 0) = b(i, 0);
@@ -209,7 +242,7 @@ static Matrix forward(const Matrix& L, const Matrix& b) {
     return y;
 }
 
-static Matrix back(const Matrix& U, const Matrix& y) {
+static Matrix back(const Matrix &U, const Matrix &y) {
     Matrix x(U.get_rows(), 1);
     for (int i = U.get_rows() - 1; i >= 0; --i) {
         x(i, 0) = y(i, 0);

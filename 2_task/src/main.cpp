@@ -20,6 +20,9 @@ Eigen::MatrixXd mEstimator(const Eigen::MatrixXd &A, const Eigen::MatrixXd &B) {
         for (uint j = 0; j < res.rows(); j++) {
             Weight(j, j) = 1 / (std::max(delta, fabs(res(j))));
         }
+        if (i == 1) {
+            std::cout << result << std::endl;
+        }
     }
     // TODO график после 1
 
@@ -51,12 +54,12 @@ int main() {
 
     Eigen::MatrixXd B = data.col(0);
     for (long i = 0; i < B.rows(); ++i) {
-        B(i, 0) = data(i, 1);
+        B(i, 0) = std::log(data(i, 0));
     }
     Eigen::MatrixXd A(data.rows(), 2);
 
     for (long i = 0; i < A.rows(); ++i) {
-        A(i, 0) = std::log10(data(i, 0));
+        A(i, 0) = data(i, 1);
         A(i, 1) = 1;
     }
 
